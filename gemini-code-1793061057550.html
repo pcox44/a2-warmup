@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Warm-Up Generator (4-Up Printable)</title>
+
+  <!-- KaTeX for crisp LaTeX Math Rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+
+  <!-- Google Fonts & Lucide Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --card-bg: rgba(18, 24, 38, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent-cyan: #38bdf8;
+      --accent-indigo: #6366f1;
+      --accent-violet: #8b5cf6;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --paper-bg: #ffffff;
+      --paper-text: #0f172a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.08) 0%, transparent 40%);
+      background-attachment: fixed;
+    }
+
+    /* Screen UI Layout */
+    .app-header {
+      padding: 1.25rem 2rem;
+      background: rgba(9, 13, 22, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .main-layout {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 2rem;
+      padding: 2rem;
+      max-width: 1700px;
+      margin: 0 auto;
+      width: 100%;
+      flex: 1;
+    }
+
+    @media (max-width: 1100px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .sidebar-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .glass-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(16px);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent-cyan);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .btn-toggle-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 0.25rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .btn-toggle {
+      padding: 0.6rem 0.8rem;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .btn-toggle.active {
+      background: linear-gradient(135deg, var(--accent-indigo), var(--accent-violet));
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    /* Skills Selection List */
+    .skills-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .skills-count-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .skills-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-height: 420px;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+
+    .skills-list::-webkit-scrollbar {
+      width: 5px;
+    }
+    .skills-list::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+    }
+
+    .category-group-header {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-violet);
+      margin: 0.6rem 0 0.25rem 0.2rem;
+    }
+
+    .skill-checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 0.85rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 0.85rem;
+    }
+
+    .skill-checkbox-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .skill-checkbox-item.selected {
+      background: rgba(99, 102, 241, 0.12);
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    .skill-checkbox-item input[type="checkbox"] {
+      accent-color: var(--accent-indigo);
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Print Action Buttons */
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .btn-action {
+      width: 100%;
+      padding: 0.85rem 1.25rem;
+      border-radius: 12px;
+      border: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      transition: all 0.25s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-indigo));
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(56, 189, 248, 0.35);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Live Preview Pane */
+    .preview-pane-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .preview-toolbar {
+      width: 100%;
+      max-width: 8.5in;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1.25rem;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Standardized Paper Preview */
+    .paper-preview-container {
+      width: 8.5in;
+      height: 11in;
+      background: var(--paper-bg);
+      color: var(--paper-text);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      border-radius: 4px;
+      padding: 0.35in;
+      transform-origin: top center;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+    }
+
+    /* 2x2 Printable Warm-Up Grid */
+    .warmup-grid-2x2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 0.25in;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Solid Box Outer Styling for Warm-Up */
+    .quiz-box {
+      border: 2px solid #000;
+      border-radius: 6px;
+      padding: 0.25in 0.3in;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-sizing: border-box;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .quiz-header {
+      border-bottom: 1.5px solid #000;
+      padding-bottom: 0.15in;
+      margin-bottom: 0.15in;
+    }
+
+    .quiz-header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.15in;
+    }
+
+    .quiz-title-main {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .quiz-header-meta {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 0.8fr;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .meta-field-line {
+      display: flex;
+      align-items: flex-end;
+      gap: 0.2rem;
+    }
+
+    .meta-line {
+      flex: 1;
+      border-bottom: 1px solid #000;
+      min-height: 12px;
+    }
+
+    /* Problems List */
+    .quiz-problems-list {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      flex: 1;
+    }
+
+    .problem-row {
+      display: flex;
+      align-items: center;
+      font-size: 0.92rem;
+      line-height: 1.3;
+    }
+
+    .problem-num {
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-right: 0.35rem;
+      min-width: 1.2rem;
+    }
+
+    .problem-directive {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: #1e293b;
+      margin-right: 0.35rem;
+    }
+
+    .problem-math {
+      font-size: 0.95rem;
+    }
+
+    /* PRINT STYLES - STRICT SINGLE PAGE NO TRAILING BLANKS */
+    @media print {
+      @page {
+        size: letter portrait;
+        margin: 0.35in;
+      }
+
+      html, body {
+        background: #fff !important;
+        color: #000 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        overflow: hidden !important;
+      }
+
+      .app-header, 
+      .sidebar-panel, 
+      .preview-toolbar {
+        display: none !important;
+      }
+
+      .main-layout {
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: none !important;
+        width: 100% !important;
+      }
+
+      .paper-preview-container {
+        box-shadow: none !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+
+      .warmup-grid-2x2 {
+        gap: 0.25in !important;
+        width: 100% !important;
+        height: 100% !important;
+      }
+
+      .quiz-box {
+        border: 2px solid #000 !important;
+        border-radius: 6px !important;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen Header -->
+  <header class="app-header">
+    <div class="brand-title">
+      <i data-lucide="file-text" style="color: var(--accent-cyan);"></i>
+      Math Warm-Up Studio
+    </div>
+  </header>
+
+  <main class="main-layout">
+    
+    <!-- Left Configuration Sidebar -->
+    <aside class="sidebar-panel">
+      
+      <!-- Settings Card -->
+      <div class="glass-card">
+        <div class="card-title">
+          <i data-lucide="sliders"></i> Warm-Up Configuration
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Difficulty Level</label>
+          <div class="btn-toggle-group">
+            <button class="btn-toggle active" id="btn-level-1" onclick="setLevel(1)">Level 1</button>
+            <button class="btn-toggle" id="btn-level-2" onclick="setLevel(2)">Level 2</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Quiz Variety (4-Up Page)</label>
+          <div class="btn-toggle-group">
+            <button class="btn-toggle active" id="btn-var-identical" onclick="setVariety('identical')">4 Identical</button>
+            <button class="btn-toggle" id="btn-var-unique" onclick="setVariety('unique')">4 Unique</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skill Selection Card (Strictly 5 Max) -->
+      <div class="glass-card">
+        <div class="skills-header">
+          <div class="card-title" style="margin-bottom:0;">
+            <i data-lucide="check-square"></i> Select 5 Skills
+          </div>
+          <span class="skills-count-badge" id="skills-badge">5 / 5 Active</span>
+        </div>
+
+        <div class="skills-list" id="skills-container">
+          <!-- Skill Items Populated via JS -->
+        </div>
+      </div>
+
+      <!-- Direct Print Action Buttons -->
+      <div class="action-buttons">
+        <button class="btn-action btn-primary" onclick="triggerPrintSelected()">
+          <i data-lucide="printer"></i> Print Selected (5 Skills)
+        </button>
+        <button class="btn-action btn-secondary" onclick="triggerPrintRandom()">
+          <i data-lucide="shuffle"></i> Print Random 5 Skills
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- Right Live Preview Studio -->
+    <section class="preview-pane-wrapper">
+      <div class="preview-toolbar">
+        <span><i data-lucide="eye" style="vertical-align: middle; margin-right: 4px;"></i> Single Page 2x2 Print Preview (8.5" x 11")</span>
+        <span style="color: var(--accent-cyan); font-weight: 600;">WARM-UP</span>
+      </div>
+
+      <!-- Printable 1-Page Container -->
+      <div class="paper-preview-container" id="printable-paper">
+        <div class="warmup-grid-2x2" id="grid-container">
+          <!-- 4 Warm-Up Boxes Populated Dynamically -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // --- SKILLS REGISTRY (15 Skills) ---
+    const SKILLS_DATABASE = [
+      // Order of Operations & Arithmetic Category
+      { id: 'order_ops', name: 'Order of Operations (PEMDAS)', category: 'Order of Operations' },
+      { id: 'arithmetic', name: 'Basic Multiplication Facts', category: 'Order of Operations' },
+      { id: 'add_sub', name: 'Adding & Subtracting Integers', category: 'Order of Operations' },
+      { id: 'powers_roots', name: 'Powers & Square Roots', category: 'Order of Operations' },
+      { id: 'abs_val', name: 'Absolute Value Expressions', category: 'Order of Operations' },
+      
+      // Algebra Category
+      { id: 'like_terms', name: 'Combining Like Terms (x³, x², x)', category: 'Algebra' },
+      { id: 'gcf_factoring', name: 'GCF Factoring Binomials', category: 'Algebra' },
+      { id: 'distributive', name: 'Distributive Property Expansion', category: 'Algebra' },
+      { id: 'eval_expr', name: 'Evaluating Expressions', category: 'Algebra' },
+
+      // Exponents Category
+      { id: 'monomial_mult', name: 'Multiplying Monomials', category: 'Exponents' },
+      { id: 'exp_product', name: 'Exponent Product Rule (xᵃ · xᵇ)', category: 'Exponents' },
+      { id: 'exp_quotient', name: 'Exponent Quotient Rule (xᵃ / xᵇ)', category: 'Exponents' },
+      { id: 'exp_power', name: 'Exponent Power Rule ((xᵃ)ᵇ)', category: 'Exponents' },
+
+      // Equations Category
+      { id: 'one_step_eq', name: 'One-Step Linear Equations', category: 'Equations' },
+      { id: 'two_step_eq', name: 'Two-Step Linear Equations', category: 'Equations' }
+    ];
+
+    // Default Selected 5 Skills
+    let activeSkillIds = ['order_ops', 'add_sub', 'monomial_mult', 'gcf_factoring', 'powers_roots'];
+    let currentLevel = 1; // 1 or 2
+    let currentVariety = 'identical'; // 'identical' or 'unique'
+
+    // Helper: Random Integer
+    function randInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function randNonZero(min, max) {
+      let val = 0;
+      while (val === 0) val = randInt(min, max);
+      return val;
+    }
+
+    // Helper: Format Exponents cleanly so x^1 becomes x
+    function formatExp(variable, power) {
+      if (power === 0) return '1';
+      if (power === 1) return variable;
+      return `${variable}^{${power}}`;
+    }
+
+    // --- QUESTION GENERATOR ENGINE ---
+    function generateQuestion(skillId, level) {
+      const isL1 = (level === 1);
+
+      switch (skillId) {
+        case 'order_ops': {
+          const a = isL1 ? randInt(2, 5) : randInt(3, 7);
+          const b = isL1 ? randInt(2, 4) : randInt(2, 5);
+          const c = isL1 ? randInt(1, 4) : randInt(2, 5);
+          return { directive: 'Simplify:', latex: `${a} + ${b} \\cdot ${c}^2` };
+        }
+
+        case 'arithmetic': {
+          const a = isL1 ? randInt(2, 9) : randInt(6, 14);
+          const b = isL1 ? randInt(2, 9) : randInt(7, 15);
+          return { directive: 'Simplify:', latex: `${a} \\cdot ${b}` };
+        }
+
+        case 'add_sub': {
+          const a = isL1 ? randNonZero(-9, 9) : randNonZero(-25, 25);
+          const b = isL1 ? randNonZero(-9, 9) : randNonZero(-25, 25);
+          const op = Math.random() > 0.5 ? '+' : '-';
+          const bStr = b < 0 ? `(${b})` : `${b}`;
+          return { directive: 'Simplify:', latex: `${a} ${op} ${bStr}` };
+        }
+
+        case 'like_terms': {
+          const c1 = randNonZero(-7, 7);
+          const c2 = randNonZero(-7, 7);
+          const c3 = randNonZero(-7, 7);
+          const c4 = randNonZero(-7, 7);
+          if (isL1) {
+            return { directive: 'Simplify:', latex: `${c1}x + ${c2} + ${c3}x - ${c4}` };
+          } else {
+            return { directive: 'Simplify:', latex: `${c1}x^3 + ${c2}x^2 + ${c3}x^2 - ${c4}x^3` };
+          }
+        }
+
+        case 'monomial_mult': {
+          const v = 'x';
+          const coef1 = isL1 ? randInt(1, 5) : randNonZero(-6, 6);
+          const coef2 = isL1 ? randInt(1, 5) : randNonZero(-6, 6);
+          const p1 = randInt(1, 3);
+          const p2 = randInt(1, 3);
+          const term1 = coef1 === 1 ? formatExp(v, p1) : `${coef1}${formatExp(v, p1)}`;
+          const term2 = coef2 === 1 ? formatExp(v, p2) : `${coef2}${formatExp(v, p2)}`;
+          return { directive: 'Simplify:', latex: `(${term1}) \\cdot (${term2})` };
+        }
+
+        case 'exp_product': {
+          const p1 = isL1 ? randInt(1, 4) : randInt(3, 8);
+          const p2 = isL1 ? randInt(1, 4) : randInt(3, 8);
+          const term1 = formatExp('x', p1);
+          const term2 = formatExp('x', p2);
+          return { directive: 'Simplify:', latex: `${term1} \\cdot ${term2}` };
+        }
+
+        case 'exp_quotient': {
+          const p2 = isL1 ? randInt(1, 3) : randInt(2, 5);
+          const p1 = p2 + (isL1 ? randInt(1, 3) : randInt(2, 5));
+          return { directive: 'Simplify:', latex: `\\frac{x^{${p1}}}{${formatExp('x', p2)}}` };
+        }
+
+        case 'exp_power': {
+          const p1 = isL1 ? randInt(1, 3) : randInt(2, 4);
+          const p2 = isL1 ? randInt(2, 3) : randInt(3, 5);
+          return { directive: 'Simplify:', latex: `(${formatExp('x', p1)})^{${p2}}` };
+        }
+
+        case 'gcf_factoring': {
+          const gcf = isL1 ? randInt(2, 5) : randInt(3, 9);
+          const c1 = isL1 ? randInt(1, 4) : randInt(2, 6);
+          const c2 = isL1 ? randInt(1, 5) : randInt(2, 7);
+          const term1 = gcf * c1;
+          const term2 = gcf * c2;
+          return { directive: 'Factor:', latex: `${term1}x + ${term2}` };
+        }
+
+        case 'powers_roots': {
+          if (Math.random() > 0.5) {
+            const base = isL1 ? randInt(2, 9) : randInt(10, 15);
+            const val = base * base;
+            return { directive: 'Evaluate:', latex: `\\sqrt{${val}}` };
+          } else {
+            const base = isL1 ? randInt(2, 8) : randInt(6, 12);
+            return { directive: 'Evaluate:', latex: `${base}^2` };
+          }
+        }
+
+        case 'distributive': {
+          const a = isL1 ? randInt(2, 5) : randNonZero(-6, 6);
+          const b = isL1 ? randInt(1, 5) : randNonZero(-7, 7);
+          const c = isL1 ? randInt(1, 6) : randNonZero(-8, 8);
+          const bTerm = b === 1 ? 'x' : `${b}x`;
+          const cSign = c > 0 ? `+ ${c}` : `- ${Math.abs(c)}`;
+          return { directive: 'Simplify:', latex: `${a}(${bTerm} ${cSign})` };
+        }
+
+        case 'eval_expr': {
+          const xVal = isL1 ? randInt(1, 4) : randNonZero(-4, 4);
+          const a = isL1 ? randInt(2, 4) : randInt(2, 5);
+          const b = isL1 ? randInt(1, 5) : randInt(2, 8);
+          return { directive: 'Evaluate:', latex: `${a}x + ${b} \\quad \\text{for } x = ${xVal}` };
+        }
+
+        case 'one_step_eq': {
+          const x = isL1 ? randInt(1, 9) : randNonZero(-12, 12);
+          const a = isL1 ? randInt(2, 8) : randNonZero(-10, 10);
+          const ans = x + a;
+          return { directive: 'Solve:', latex: `x + ${a} = ${ans}` };
+        }
+
+        case 'two_step_eq': {
+          const x = isL1 ? randInt(1, 6) : randNonZero(-8, 8);
+          const m = isL1 ? randInt(2, 5) : randNonZero(-6, 6);
+          const b = isL1 ? randInt(1, 8) : randNonZero(-12, 12);
+          const rhs = m * x + b;
+          const bSign = b >= 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
+          return { directive: 'Solve:', latex: `${m}x ${bSign} = ${rhs}` };
+        }
+
+        case 'abs_val': {
+          const v1 = isL1 ? randInt(-9, 9) : randInt(-20, 20);
+          const v2 = isL1 ? randInt(-9, 9) : randInt(-20, 20);
+          return { directive: 'Evaluate:', latex: `|${v1} + ${v2}|` };
+        }
+
+        default:
+          return { directive: 'Simplify:', latex: `2 + 2` };
+      }
+    }
+
+    // --- UI RENDER LOGIC ---
+
+    function initUI() {
+      renderSkillsList();
+      renderWarmups();
+      lucide.createIcons();
+    }
+
+    function renderSkillsList() {
+      const container = document.getElementById('skills-container');
+      container.innerHTML = '';
+
+      const categories = ['Order of Operations', 'Algebra', 'Exponents', 'Equations'];
+
+      categories.forEach(cat => {
+        const catSkills = SKILLS_DATABASE.filter(s => s.category === cat);
+        if (catSkills.length === 0) return;
+
+        const groupHeader = document.createElement('div');
+        groupHeader.className = 'category-group-header';
+        groupHeader.innerText = cat;
+        container.appendChild(groupHeader);
+
+        catSkills.forEach(skill => {
+          const isChecked = activeSkillIds.includes(skill.id);
+          const item = document.createElement('div');
+          item.className = `skill-checkbox-item ${isChecked ? 'selected' : ''}`;
+          item.innerHTML = `
+            <input type="checkbox" id="chk-${skill.id}" ${isChecked ? 'checked' : ''} onchange="toggleSkill('${skill.id}')">
+            <label for="chk-${skill.id}" style="cursor:pointer; flex:1; font-weight:500;">${skill.name}</label>
+          `;
+          container.appendChild(item);
+        });
+      });
+
+      document.getElementById('skills-badge').innerText = `${activeSkillIds.length} / 5 Active`;
+    }
+
+    function toggleSkill(skillId) {
+      if (activeSkillIds.includes(skillId)) {
+        if (activeSkillIds.length <= 1) return;
+        activeSkillIds = activeSkillIds.filter(id => id !== skillId);
+      } else {
+        if (activeSkillIds.length >= 5) {
+          activeSkillIds.shift();
+        }
+        activeSkillIds.push(skillId);
+      }
+      renderSkillsList();
+      renderWarmups();
+    }
+
+    function setLevel(lvl) {
+      currentLevel = lvl;
+      document.getElementById('btn-level-1').classList.toggle('active', lvl === 1);
+      document.getElementById('btn-level-2').classList.toggle('active', lvl === 2);
+      renderWarmups();
+    }
+
+    function setVariety(v) {
+      currentVariety = v;
+      document.getElementById('btn-var-identical').classList.toggle('active', v === 'identical');
+      document.getElementById('btn-var-unique').classList.toggle('active', v === 'unique');
+      renderWarmups();
+    }
+
+    function renderWarmups() {
+      const grid = document.getElementById('grid-container');
+      grid.innerHTML = '';
+
+      const baseQuestions = activeSkillIds.map(id => generateQuestion(id, currentLevel));
+
+      for (let i = 0; i < 4; i++) {
+        const questions = (currentVariety === 'identical')
+          ? baseQuestions
+          : activeSkillIds.map(id => generateQuestion(id, currentLevel));
+
+        const quizBox = document.createElement('div');
+        quizBox.className = 'quiz-box';
+
+        let problemsHTML = '';
+        questions.forEach((q, idx) => {
+          problemsHTML += `
+            <div class="problem-row">
+              <span class="problem-num">${idx + 1}.</span>
+              <span class="problem-directive">${q.directive}</span>
+              <span class="problem-math" id="math-p-${i}-${idx}"></span>
+            </div>
+          `;
+        });
+
+        quizBox.innerHTML = `
+          <div class="quiz-header">
+            <div class="quiz-header-top">
+              <div class="quiz-title-main">WARM-UP</div>
+            </div>
+            <div class="quiz-header-meta">
+              <div class="meta-field-line">Name:<div class="meta-line"></div></div>
+              <div class="meta-field-line">Date:<div class="meta-line"></div></div>
+              <div class="meta-field-line">Per:<div class="meta-line"></div></div>
+            </div>
+          </div>
+          <div class="quiz-problems-list">
+            ${problemsHTML}
+          </div>
+        `;
+
+        grid.appendChild(quizBox);
+
+        questions.forEach((q, idx) => {
+          const el = document.getElementById(`math-p-${i}-${idx}`);
+          if (el) {
+            katex.render(q.latex, el, { throwOnError: false });
+          }
+        });
+      }
+    }
+
+    // --- PRINT ACTIONS ---
+    function triggerPrintSelected() {
+      window.print();
+    }
+
+    function triggerPrintRandom() {
+      const shuffled = [...SKILLS_DATABASE].sort(() => 0.5 - Math.random());
+      activeSkillIds = shuffled.slice(0, 5).map(s => s.id);
+      renderSkillsList();
+      renderWarmups();
+      setTimeout(() => {
+        window.print();
+      }, 100);
+    }
+
+    window.addEventListener('DOMContentLoaded', initUI);
+  </script>
+</body>
+</html>
